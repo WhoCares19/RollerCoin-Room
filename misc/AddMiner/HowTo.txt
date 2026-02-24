@@ -1,0 +1,16 @@
+~~~~~~~~~~~~~~~~~~~~ This app is used for getting all appropriate data about the miner ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Appropriate Data means: 
+1. ID for Each level
+2. Level of that specific ID
+3. Appropriate power both in gh/s and ph/s
+4. Appropriate Bonus.
+
+~~~~~~~~~~~~~~~~~~~~ How To Use ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1. Right click on RC site and open Inspect Element.
+2. Then go to Merge page on RC site
+3. Search miner in Merge section
+4. in Inspect element in Network Tab, Find appropriate api (Should start with "crafting-list?search=") and click on it
+5. then click on Response, select all the data inside and copy it.
+6. Paste into the app and click on parse Data.

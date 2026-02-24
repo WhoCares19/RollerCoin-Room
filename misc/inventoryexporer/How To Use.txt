@@ -1,0 +1,15 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RollerCoin Inventory grabber ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This app makes single .json file of the inventory data pasted from Rollercoin Site
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ How To Use ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1. Go to Inventory page on RollerCoin
+2. click on inspect element.
+3. select miner tab.
+4. in inspect element go to Network tab
+5. in Network Tab there should be something like: https://rollercoin.com/api/storage/inventory/miners?sort=date&sort_direction=-1&skip=0&limit=24
+6. Click on it and go to "Response" tab.
+7. Paste that data into the app and click on "Export" data.
+
+You can paste multiple json data one after another and all will be exported 
