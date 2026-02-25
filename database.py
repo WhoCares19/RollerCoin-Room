@@ -12,7 +12,7 @@ class DatabaseHandler:
         self.preload_data()
 
     def preload_data(self):
-        """One-time load of all data into memory including the level_id_tag for matching."""
+        """One-time load of all data into memory including IDs and legacy stats."""
         if not os.path.exists(self.catalog_path):
             return
 
@@ -23,11 +23,14 @@ class DatabaseHandler:
         cursor = conn.cursor()
         
         try:
-            for lvl in range(1, 7):
+            # Load levels 0 (Legacy) through 6 (Standard)
+            # Stats for all levels now reside in miner_level_stats
+            for lvl in range(0, 7):
                 query = """
                     SELECT 
                         md.id, md.name, md.image_path, md.slot_size, md.set_global_id, md.set_sign_icon_path,
-                        mls.raw_power, mls.bonus, mls.level_icon_path, mls.id, mls.level_id_tag
+                        mls.raw_power, mls.bonus, mls.level_icon_path, mls.id, mls.level_id_tag,
+                        md.legacy_id, md.is_legacy
                     FROM miner_definitions md
                     JOIN miner_level_stats mls ON md.id = mls.miner_id
                     WHERE mls.level_number = ?
@@ -35,8 +38,9 @@ class DatabaseHandler:
                 cursor.execute(query, (lvl,))
                 self._cache["miners"][lvl] = cursor.fetchall()
 
+            # Load Racks
             cursor.execute("""
-                SELECT id, name, rack_id_tag, set_global_id, rack_size, bonus_percent, image_path, set_sign_icon_path 
+                SELECT id, name, rack_id_tag, set_global_id, rack_size, Bonus_percent, image_path, set_sign_icon_path 
                 FROM rack_definitions
             """)
             self._cache["racks"] = cursor.fetchall()
@@ -46,32 +50,43 @@ class DatabaseHandler:
         finally:
             conn.close()
 
+    def get_all_definitions(self):
+        """Fetches all miner definitions."""
+        if not os.path.exists(self.catalog_path): return []
+        conn = sqlite3.connect(self.catalog_path)
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT id, name, image_path, slot_size, set_global_id, set_sign_icon_path,
+                   legacy_id, is_legacy
+            FROM miner_definitions
+        """)
+        rows = cursor.fetchall()
+        conn.close()
+        return rows
+
     def get_all_set_definitions(self):
         """Returns all sets for the UI dropdown: (id, name, set_global_id)"""
         if not os.path.exists(self.catalog_path): return []
         conn = sqlite3.connect(self.catalog_path)
         cursor = conn.cursor()
-        # Removed set_sign_icon_path to prevent crash
         cursor.execute("SELECT id, name, set_global_id FROM set_definitions")
         rows = cursor.fetchall()
         conn.close()
         return rows
 
     def get_set_icon_lookup(self, set_global_id):
-        """Looks up an existing set icon path from miners or racks assigned to this set."""
+        """Looks up an existing set icon path."""
         if not set_global_id or not os.path.exists(self.catalog_path):
             return ""
         conn = sqlite3.connect(self.catalog_path)
         cursor = conn.cursor()
         
         icon_path = ""
-        # Check miners first
         cursor.execute("SELECT set_sign_icon_path FROM miner_definitions WHERE set_global_id = ? AND set_sign_icon_path != '' LIMIT 1", (set_global_id,))
         row = cursor.fetchone()
         if row:
             icon_path = row[0]
         else:
-            # Check racks
             cursor.execute("SELECT set_sign_icon_path FROM rack_definitions WHERE set_global_id = ? AND set_sign_icon_path != '' LIMIT 1", (set_global_id,))
             row = cursor.fetchone()
             if row:
@@ -81,7 +96,6 @@ class DatabaseHandler:
         return icon_path
 
     def ensure_set_exists(self, name, global_id):
-        """Checks if a set global_id exists, otherwise creates it with just name and ID."""
         if not global_id: return None
         conn = sqlite3.connect(self.catalog_path)
         cursor = conn.cursor()
@@ -96,10 +110,6 @@ class DatabaseHandler:
         return global_id
 
     def add_custom_miner_full(self, base_data, levels_list):
-        """
-        base_data: {'name', 'image_path', 'slot_size', 'set_global_id', 'set_sign_icon_path'}
-        levels_list: list of {'lvl', 'power', 'bonus', 'level_id_tag'}
-        """
         conn = sqlite3.connect(self.catalog_path)
         cursor = conn.cursor()
         try:
@@ -124,7 +134,6 @@ class DatabaseHandler:
             for l in levels_list:
                 lvl_num = l['lvl']
                 icon_path = os.path.join("assets", "Levels", f"lvl{lvl_num}.png").replace("\\", "/")
-                
                 cursor.execute("SELECT id FROM miner_level_stats WHERE miner_id = ? AND level_number = ?", 
                              (miner_id, lvl_num))
                 stat_row = cursor.fetchone()
@@ -144,7 +153,6 @@ class DatabaseHandler:
             conn.close()
 
     def add_custom_rack_full(self, rack_data):
-        """rack_data: {'name', 'rack_id_tag', 'set_global_id', 'rack_size', 'bonus_percent', 'image_path', 'set_sign_icon_path'}"""
         conn = sqlite3.connect(self.catalog_path)
         cursor = conn.cursor()
         try:
@@ -152,13 +160,13 @@ class DatabaseHandler:
             if cursor.fetchone():
                 cursor.execute("""
                     UPDATE rack_definitions 
-                    SET rack_id_tag=?, set_global_id=?, rack_size=?, bonus_percent=?, image_path=?, set_sign_icon_path=?
+                    SET rack_id_tag=?, set_global_id=?, rack_size=?, Bonus_percent=?, image_path=?, set_sign_icon_path=?
                     WHERE name=?
                 """, (rack_data['rack_id_tag'], rack_data['set_global_id'], rack_data['rack_size'],
                       rack_data['bonus_percent'], rack_data['image_path'], rack_data['set_sign_icon_path'], rack_data['name']))
             else:
                 cursor.execute("""
-                    INSERT INTO rack_definitions (name, rack_id_tag, set_global_id, rack_size, bonus_percent, image_path, set_sign_icon_path)
+                    INSERT INTO rack_definitions (name, rack_id_tag, set_global_id, rack_size, Bonus_percent, image_path, set_sign_icon_path)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
                 """, (rack_data['name'], rack_data['rack_id_tag'], rack_data['set_global_id'], 
                       rack_data['rack_size'], rack_data['bonus_percent'], rack_data['image_path'], rack_data['set_sign_icon_path']))

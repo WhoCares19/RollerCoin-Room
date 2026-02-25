@@ -2,6 +2,7 @@ import sys
 import os
 import json
 import copy
+import re
 from PySide6.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -46,6 +47,7 @@ from logic_math import (
 from database import DatabaseHandler
 from inventory import InventorySection
 from room_preview import RoomView, RackPlaceholder
+from importer import clean_and_parse_json, find_mining_data_block, find_item_robust
 
 DARK_STYLESHEET = """
 QMainWindow, QDialog {
@@ -172,9 +174,10 @@ class ImportManagerDialog(QDialog):
     def init_ui(self):
         layout = QVBoxLayout(self)
         layout.setSpacing(20)
-        room_group = QVBoxLayout()
-        room_label = QLabel("<b>1. Import Player Room</b>")
-        room_group.addWidget(room_label)
+        
+        # 1. Room Import
+        room_box = QVBoxLayout()
+        room_box.addWidget(QLabel("<b>1. Import Player Room</b>"))
         room_path_layout = QHBoxLayout()
         self.room_path_edit = QLineEdit(self.config.get("room_path", ""))
         self.room_path_edit.setReadOnly(True)
@@ -182,14 +185,15 @@ class ImportManagerDialog(QDialog):
         room_browse.clicked.connect(self.browse_room)
         room_path_layout.addWidget(self.room_path_edit)
         room_path_layout.addWidget(room_browse)
-        room_group.addLayout(room_path_layout)
+        room_box.addLayout(room_path_layout)
         self.room_auto_cb = QCheckBox("Automatically import on app start")
         self.room_auto_cb.setChecked(self.config.get("room_auto", False))
-        room_group.addWidget(self.room_auto_cb)
-        layout.addLayout(room_group)
-        inv_group = QVBoxLayout()
-        inv_label = QLabel("<b>2. Import Player Inventory</b>")
-        inv_group.addWidget(inv_label)
+        room_box.addWidget(self.room_auto_cb)
+        layout.addLayout(room_box)
+        
+        # 2. Inventory Import
+        inv_box = QVBoxLayout()
+        inv_box.addWidget(QLabel("<b>2. Import Player Inventory</b>"))
         inv_path_layout = QHBoxLayout()
         self.inv_path_edit = QLineEdit(self.config.get("inv_path", ""))
         self.inv_path_edit.setReadOnly(True)
@@ -197,20 +201,17 @@ class ImportManagerDialog(QDialog):
         inv_browse.clicked.connect(self.browse_inv)
         inv_path_layout.addWidget(self.inv_path_edit)
         inv_path_layout.addWidget(inv_browse)
-        inv_group.addLayout(inv_path_layout)
+        inv_box.addLayout(inv_path_layout)
         self.inv_auto_cb = QCheckBox("Automatically import on app start")
         self.inv_auto_cb.setChecked(self.config.get("inv_auto", False))
-        inv_group.addWidget(self.inv_auto_cb)
-        layout.addLayout(inv_group)
+        inv_box.addWidget(self.inv_auto_cb)
+        layout.addLayout(inv_box)
+        
         layout.addStretch()
         btn_layout = QHBoxLayout()
-        save_btn = QPushButton("Save && Apply")
-        save_btn.clicked.connect(self.accept)
-        cancel_btn = QPushButton("Cancel")
-        cancel_btn.clicked.connect(self.reject)
-        btn_layout.addStretch()
-        btn_layout.addWidget(save_btn)
-        btn_layout.addWidget(cancel_btn)
+        save_btn = QPushButton("Save && Apply"); save_btn.clicked.connect(self.accept)
+        cancel_btn = QPushButton("Cancel"); cancel_btn.clicked.connect(self.reject)
+        btn_layout.addStretch(); btn_layout.addWidget(save_btn); btn_layout.addWidget(cancel_btn)
         layout.addLayout(btn_layout)
 
     def browse_room(self):
@@ -331,7 +332,8 @@ class RackDetailsDialog(QDialog):
                 img_lbl.setPixmap(QPixmap(m['image_path']).scaled(35, 25, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
             img_lbl.setFixedWidth(40)
             
-            name_lbl = QLabel(f"<b>{m['name']}</b> (Lvl {m['lvl']})")
+            lvl_text = f"Lvl {m['lvl']}" if m['lvl'] > 0 else "Legacy"
+            name_lbl = QLabel(f"<b>{m['name']}</b> ({lvl_text})")
             p_lbl = QLabel(f"<span style='color:#00ff00;'>{format_hashrate(m['power'])}</span>")
             b_lbl = QLabel(f"<span style='color:#ffcc00;'>{m['bonus']}%</span>")
             
@@ -434,8 +436,7 @@ class AddRackDialog(QDialog):
         layout.addStretch()
         btn_box = QHBoxLayout()
         apply_btn = QPushButton("Save to Database"); apply_btn.clicked.connect(self.do_apply)
-        cancel_btn = QPushButton("Cancel")
-        cancel_btn.clicked.connect(self.reject)
+        cancel_btn = QPushButton("Cancel"); cancel_btn.clicked.connect(self.reject)
         btn_box.addWidget(apply_btn); btn_box.addWidget(cancel_btn); layout.addLayout(btn_box)
 
     def on_set_changed(self, index):
@@ -561,7 +562,8 @@ class PowerBreakdownDialog(QDialog):
             
             row.addWidget(room_val); layout.addLayout(row)
 
-        layout.addStretch(); close_btn = QPushButton("Close"); close_btn.clicked.connect(self.close); layout.addWidget(close_btn, alignment=Qt.AlignmentFlag.AlignCenter)
+        layout.addStretch(); close_btn = QPushButton("Close"); close_btn.clicked.connect(self.close)
+        layout.addWidget(close_btn, alignment=Qt.AlignmentFlag.AlignCenter)
 
     def create_delta_label(self, delta):
         lbl = QLabel("")
@@ -617,7 +619,7 @@ class MainWindow(QMainWindow):
         snapshot = {"rooms": copy.deepcopy(all_rooms_state), "personal_inventory": copy.deepcopy(self.inventory.personal_data)}
         if self.undo_stack and self.undo_stack[-1] == snapshot: return
         self.undo_stack.append(snapshot)
-        if len(self.undo_stack) > 11: self.undo_stack.pop(0)
+        if len(self.undo_stack) > 50: self.undo_stack.pop(0)
         self.redo_stack.clear()
 
     def undo(self):
@@ -634,9 +636,12 @@ class MainWindow(QMainWindow):
         self.inventory.blockSignals(True)
         try:
             for idx, room_view in enumerate(self.room_views):
-                target_room_data = state["rooms"][idx] if idx < len(state["rooms"]) else []
+                target_room_data = state["rooms"][idx] if idx < len(state["rooms"]) else {}
+                room_view.room_uuid = target_room_data.get('room_uuid')
+                target_racks = target_room_data.get('racks', [])
+                
                 for p_idx, pld in enumerate(room_view.placeholders):
-                    target_rack_info = target_room_data[p_idx] if p_idx < len(target_room_data) else None
+                    target_rack_info = target_racks[p_idx] if p_idx < len(target_racks) else None
                     if not target_rack_info:
                         if pld.rack: pld.remove_rack(silent=True)
                         continue
@@ -686,13 +691,16 @@ class MainWindow(QMainWindow):
 
     def reconcile_personal_inventory(self):
         for view in self.room_views:
-            for p in view.placeholders:
-                if p.rack:
-                    if p.rack.data.get('source') == 'Personal': self.inventory.adjust_quantity(p.rack.data, -1)
-                    for row in p.rack.rows_data:
-                        miners = [row] if isinstance(row, dict) else (row if isinstance(row, list) else [])
-                        for m in miners:
-                            if isinstance(m, dict) and m.get('source') == 'Personal': self.inventory.adjust_quantity(m, -1)
+            state = view.get_room_state()
+            for rack_info in state.get('racks', []):
+                rack_data = rack_info.get('rack_data')
+                if rack_data and rack_data.get('source') == 'Personal': 
+                    self.inventory.adjust_quantity(rack_data, -1)
+                for row in rack_info.get('rows', []):
+                    miners = [row] if isinstance(row, dict) else (row if isinstance(row, list) else [])
+                    for m in miners:
+                        if isinstance(m, dict) and m.get('source') == 'Personal': 
+                            self.inventory.adjust_quantity(m, -1)
 
     def connect_room_signals(self, view):
         view.stats_changed.connect(self.update_stats); view.stats_changed.connect(self.record_state); view.stats_changed.connect(self.auto_save)
@@ -758,16 +766,18 @@ class MainWindow(QMainWindow):
     def sync_room_miners(self):
         lookup = {(item['name'], item['lvl']): (item['power_val'], item['bonus_val']) for item in self.inventory.game_data if item.get('type') == 'miner'}
         for view in self.room_views:
-            for p in view.placeholders:
-                if p.rack:
-                    upd = False
-                    for r_idx, row in enumerate(p.rack.rows_data):
-                        miners = [row] if isinstance(row, dict) else (row if isinstance(row, list) else [])
-                        for m in miners:
-                            if isinstance(m, dict):
-                                key = (m.get('name'), m.get('lvl'))
-                                if key in lookup: m['power_val'], m['bonus_val'] = lookup[key]; upd = True
-                    if upd: p.rack.refresh_ui()
+            state = view.get_room_state()
+            for rack_info in state.get('racks', []):
+                rack_widget = next((p.rack for p in view.placeholders if p.rack and p.rack.data == rack_info['rack_data']), None)
+                if not rack_widget: continue
+                upd = False
+                for row in rack_widget.rows_data:
+                    miners = [row] if isinstance(row, dict) else (row if isinstance(row, list) else [])
+                    for m in miners:
+                        if isinstance(m, dict):
+                            key = (m.get('name'), m.get('lvl'))
+                            if key in lookup: m['power_val'], m['bonus_val'] = lookup[key]; upd = True
+                if upd: rack_widget.refresh_ui()
 
     def on_inventory_item_clicked(self, data):
         c = self.room_stack.currentWidget()
@@ -813,14 +823,14 @@ class MainWindow(QMainWindow):
     def update_stats(self):
         placed_ids = set()
         for view in self.room_views:
-            for p in view.placeholders:
-                if p.rack:
-                    for row in p.rack.rows_data:
-                        miners = [row] if isinstance(row, dict) else (row if isinstance(row, list) else [])
-                        for m in miners:
-                            if isinstance(m, dict):
-                                self.repair_item_data(m); tag = m.get('level_id_tag')
-                                if tag: placed_ids.add(str(tag).lower())
+            st = view.get_room_state()
+            for rack_info in st.get('racks', []):
+                for row in rack_info.get('rows', []):
+                    miners = [row] if isinstance(row, dict) else (row if isinstance(row, list) else [])
+                    for m in miners:
+                        if isinstance(m, dict):
+                            self.repair_item_data(m); tag = m.get('level_id_tag')
+                            if tag: placed_ids.add(str(tag).lower())
         self.inventory.set_placed_items(placed_ids); state = {i: v.get_room_state() for i, v in enumerate(self.room_views)}
         
         self.current_stats = calculate_power_breakdown(state)
@@ -859,7 +869,11 @@ class MainWindow(QMainWindow):
         PowerBreakdownDialog(self.current_stats, self.baseline_stats, self).exec()
 
     def _save_all_rooms(self, path):
-        all_rooms = [{"room_index": i, "racks": [{"rack_data": p.rack.data, "rows": p.rack.rows_data, "is_locked": p.rack.is_locked} for p in v.placeholders if p.rack]} for i, v in enumerate(self.room_views) if any(p.rack for p in v.placeholders)]
+        all_rooms = [{"room_index": i, "room_uuid": v.room_uuid, "racks": [{
+            "rack_data": p.rack.data, 
+            "rows": p.rack.rows_data, 
+            "is_locked": p.rack.is_locked
+        } for p in v.placeholders if p.rack]} for i, v in enumerate(self.room_views) if any(p.rack for p in v.placeholders)]
         with open(path, "w") as f: json.dump(all_rooms, f, indent=2)
 
     def auto_save(self):
@@ -870,29 +884,145 @@ class MainWindow(QMainWindow):
         if not item_dict: return item_dict
         name = str(item_dict.get('name', '')).strip()
         if 'power_val' in item_dict:
-            lvl = int(item_dict.get('lvl', 1))
-            for cached in self.db_handler.get_catalog_miners(lvl):
-                if str(cached[1]).strip().lower() == name.lower(): item_dict['set_global_id'], item_dict['id'], item_dict['level_id_tag'] = cached[4], cached[0], str(cached[10]).lower(); break
+            # Check levels 0 through 6
+            for lvl in range(0, 7):
+                for cached in self.db_handler.get_catalog_miners(lvl):
+                    if str(cached[1]).strip().lower() == name.lower(): 
+                        item_dict['set_global_id'], item_dict['id'], item_dict['level_id_tag'] = cached[4], cached[0], str(cached[10]).lower()
+                        return item_dict
         else:
             for cached in self.db_handler.get_catalog_racks():
-                if str(cached[1]).strip().lower() == name.lower(): item_dict['set_global_id'], item_dict['id'] = cached[3], cached[0]; break
+                if str(cached[1]).strip().lower() == name.lower(): 
+                    item_dict['set_global_id'], item_dict['id'] = cached[3], cached[0]
+                    break
         return item_dict
 
     def load_room_file(self, path):
-        if not os.path.exists(path): return
+        if not os.path.exists(path):
+            return
+            
         self.room_save_path, self._autosave_path = path, path
-        with open(path, "r") as f: all_rooms = json.load(f)
-        for rv in self.room_views: [p.remove_rack(silent=True) for p in rv.placeholders if p.rack]
-        for room_data in all_rooms:
-            idx = room_data.get("room_index", 0)
-            if idx < len(self.room_views):
-                for p_idx, rack_info in enumerate(room_data.get("racks", [])):
-                    if p_idx < len(self.room_views[idx].placeholders):
-                        rack_data = self.repair_item_data(rack_info.get("rack_data", rack_info)); rows = rack_info.get("rows", []); is_locked = rack_info.get("is_locked", False)
-                        repaired_rows = [self.repair_item_data(r) if isinstance(r, dict) else ([self.repair_item_data(m) if isinstance(m, dict) else m for m in r] if isinstance(r, list) else r) for r in rows]
-                        self.room_views[idx].placeholders[p_idx].add_rack(rack_data, initial_miners=repaired_rows, is_locked=is_locked)
+        
+        json_content = clean_and_parse_json(path)
+        if not json_content:
+            QMessageBox.critical(self, "Parse Error", "Failed to parse JSON file.")
+            return
+            
+        for rv in self.room_views: 
+            [p.remove_rack(silent=True) for p in rv.placeholders if p.rack]
+            rv.room_uuid = None
+        
+        data_block = find_mining_data_block(json_content)
+        
+        if data_block:
+            self._import_player_json(data_block)
+        elif isinstance(json_content, list):
+            for room_data in json_content:
+                idx = room_data.get("room_index", 0)
+                if idx < len(self.room_views):
+                    self.room_views[idx].room_uuid = room_data.get("room_uuid")
+                    for p_idx, rack_info in enumerate(room_data.get("racks", [])):
+                        if p_idx < len(self.room_views[idx].placeholders):
+                            rack_data = self.repair_item_data(rack_info.get("rack_data", rack_info))
+                            rows = rack_info.get("rows", [])
+                            is_locked = rack_info.get("is_locked", False)
+                            repaired_rows = [self.repair_item_data(r) if isinstance(r, dict) else ([self.repair_item_data(m) if isinstance(m, dict) else m for m in r] if isinstance(r, list) else r) for r in rows]
+                            self.room_views[idx].placeholders[p_idx].add_rack(rack_data, initial_miners=repaired_rows, is_locked=is_locked)
+            
         self.update_stats()
         self.set_baseline() 
+
+    def _import_player_json(self, data):
+        room_list = data.get("rooms", [])
+        room_meta = {}
+        for i, r_entry in enumerate(room_list):
+            uuid = r_entry["_id"]
+            info = r_entry["room_info"]
+            level = info.get("level", 0)
+            room_meta[uuid] = info
+            if level < len(self.room_views):
+                self.room_views[level].room_uuid = uuid
+
+        instance_id_to_widget = {} 
+        r_placed, m_placed = 0, 0
+        failed_racks, failed_miners = [], []
+        self.inventory.block_inventory_signals = True
+        
+        racks_in_json = data.get("racks", [])
+        racks_by_room_uuid = {}
+        for r in racks_in_json:
+            room_id = r.get("placement", {}).get("user_room_id")
+            if room_id not in racks_by_room_uuid: racks_by_room_uuid[room_id] = []
+            racks_by_room_uuid[room_id].append(r)
+
+        for room_uuid, racks_list in racks_by_room_uuid.items():
+            view = next((v for v in self.room_views if v.room_uuid == room_uuid), None)
+            if not view: continue
+            
+            cols = room_meta.get(room_uuid, {}).get("cols", 8)
+            racks_list.sort(key=lambda r: (r['placement'].get('y', 0) * cols) + r['placement'].get('x', 0))
+            
+            for i, rack_json in enumerate(racks_list):
+                if i >= len(view.placeholders):
+                    failed_racks.append(f"Rack '{rack_json.get('name')}' - Room {view.room_id+1} is full")
+                    continue
+                db_item, method = find_item_robust(
+                    rack_json.get("rack_id"), 
+                    rack_json.get("name"), 
+                    None, 
+                    self.inventory.tag_to_item_map, 
+                    self.inventory.name_to_item_map
+                )
+                if db_item:
+                    placeholder = view.placeholders[i]
+                    if placeholder.add_rack(copy.deepcopy(db_item)):
+                        self.inventory.adjust_quantity(db_item, -1)
+                        instance_id_to_widget[rack_json["_id"]] = placeholder.rack
+                        r_placed += 1
+                else:
+                    failed_racks.append(f"Rack '{rack_json.get('name')}' (ID: {rack_json.get('rack_id')}) - {method}")
+                    
+        miners_in_json = data.get("miners", [])
+        for miner_json in miners_in_json:
+            rack_id_ref = miner_json.get("placement", {}).get("user_rack_id")
+            target_rack = instance_id_to_widget.get(rack_id_ref)
+            if target_rack:
+                db_item, method = find_item_robust(
+                    miner_json.get("miner_id"), 
+                    miner_json.get("name"), 
+                    miner_json.get("level"), 
+                    self.inventory.tag_to_item_map, 
+                    self.inventory.name_to_item_map
+                )
+                if db_item:
+                    m_x, m_y = miner_json["placement"].get("x", 0), miner_json["placement"].get("y", 0)
+                    if target_rack.add_miner(copy.deepcopy(db_item), row=m_y, slot=m_x):
+                        self.inventory.adjust_quantity(db_item, -1)
+                        m_placed += 1
+                    else:
+                        if target_rack.add_miner(copy.deepcopy(db_item)):
+                            self.inventory.adjust_quantity(db_item, -1)
+                            m_placed += 1
+                        else:
+                            failed_miners.append(f"Miner '{miner_json.get('name')}' - No room left in target rack")
+                else:
+                    failed_miners.append(f"Miner '{miner_json.get('name')}' (ID: {miner_json.get('miner_id')}) - {method}")
+            else:
+                failed_miners.append(f"Miner '{miner_json.get('name')}' - Its target rack was not found or not placed")
+                        
+        self.inventory.block_inventory_signals = False
+        msg = QMessageBox(self)
+        msg.setWindowTitle("Import Results")
+        msg.setText(f"Import Finished:\n- {r_placed} Racks placed\n- {m_placed} Miners placed")
+        if failed_racks or failed_miners:
+            detail_text = "SKIPPED ITEMS:\n\n"
+            if failed_racks: detail_text += "--- Racks ---\n" + "\n".join(failed_racks) + "\n\n"
+            if failed_miners: detail_text += "--- Miners ---\n" + "\n".join(failed_miners)
+            msg.setDetailedText(detail_text)
+            msg.setIcon(QMessageBox.Warning)
+        else:
+            msg.setIcon(QMessageBox.Information)
+        msg.exec()
 
     def on_import_clicked(self):
         dlg = ImportManagerDialog(self.config, self)

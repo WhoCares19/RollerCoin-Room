@@ -12,6 +12,7 @@ from PySide6.QtGui import QPixmap, QColor, QFont, QPen, QPainter, QIcon, QAction
 from settings import (INVENTORY_ITEM_WIDTH, INVENTORY_ITEM_HEIGHT, LEVELS_DIR, CATALOG_DB_PATH)
 from database import DatabaseHandler
 from logic_math import format_hashrate, parse_hashrate_to_gh, parse_percentage_to_float
+from importer import clean_and_parse_json, parse_personal_inventory
 
 def resolve_path(path):
     if not path:
@@ -163,6 +164,8 @@ class InventorySection(QWidget):
         self.game_data = []
         self.personal_data = []
         self.tag_to_item_map = {}
+        self.name_to_item_map = {} 
+        self.legacy_to_item_map = {}
         self.placed_item_keys = set()
         self.set_names_map = {} 
         self.item_spacing = 5
@@ -346,6 +349,9 @@ class InventorySection(QWidget):
     def preload_data_from_db(self):
         self.game_data = []
         self.tag_to_item_map = {}
+        self.name_to_item_map = {} 
+        self.legacy_to_item_map = {}
+
         if os.path.exists(CATALOG_DB_PATH):
             conn = sqlite3.connect(CATALOG_DB_PATH)
             cursor = conn.cursor()
@@ -353,8 +359,9 @@ class InventorySection(QWidget):
             self.set_names_map = {row[0]: row[1] for row in cursor.fetchall()}
             conn.close()
 
-        for lvl in range(1, 7):
+        for lvl in range(0, 7):
             raw = self.db.get_catalog_miners(lvl)
+            is_legacy = (lvl == 0)
             for d in raw:
                 item = {
                     'id': d[0], 'name': d[1], 'image_path': d[2], 'slot_size': d[3], 
@@ -363,11 +370,18 @@ class InventorySection(QWidget):
                     'bonus_val': parse_percentage_to_float(d[7]),
                     'level_icon_path': d[8], 'mls_id': d[9],
                     'level_id_tag': d[10],
-                    'lvl': lvl, 'type': 'miner', 'source': 'Game', 'timestamp': 0
+                    'lvl': lvl, 'type': 'miner', 'source': 'Game', 'timestamp': 0,
+                    'is_legacy_item': is_legacy
                 }
                 self.game_data.append(item)
                 if d[10]: 
-                    self.tag_to_item_map[str(d[10]).lower()] = item
+                    tag_key = str(d[10]).lower().strip()
+                    self.tag_to_item_map[tag_key] = item
+                    if is_legacy:
+                        self.legacy_to_item_map[tag_key] = item
+                
+                name_key = str(d[1]).lower().strip()
+                self.name_to_item_map[(name_key, lvl)] = item
 
         raw_r = self.db.get_catalog_racks()
         for d in raw_r:
@@ -380,10 +394,13 @@ class InventorySection(QWidget):
             self.game_data.append(item)
             if d[2]:
                 self.tag_to_item_map[str(d[2]).lower()] = item
+            
+            name_key = str(d[1]).lower().strip()
+            self.name_to_item_map[name_key] = item
         self.trigger_refresh()
 
     def on_import_clicked(self):
-        path, _ = QFileDialog.getOpenFileName(self, "Import Personal Items", "", "Files (*.json *.txt *.csv)")
+        path, _ = QFileDialog.getOpenFileName(self, "Import Personal Items", "", "JSON Files (*.json)")
         if not path:
             return
         self.load_inventory_file(path)
@@ -394,7 +411,6 @@ class InventorySection(QWidget):
             return
         
         self.inventory_is_valid = False 
-        
         backup_dir = "backups"
         if not os.path.exists(backup_dir):
             os.makedirs(backup_dir)
@@ -402,47 +418,17 @@ class InventorySection(QWidget):
             shutil.copy(path, os.path.join(backup_dir, f"backup_{os.path.basename(path)}"))
         except: pass
 
-        id_quantities = {}
-        
-        try:
-            with open(path, 'r', encoding='utf-8') as f:
-                content = f.read()
-                decoder = json.JSONDecoder()
-                pos = 0
-                while pos < len(content):
-                    content = content.lstrip()
-                    if not content: break
-                    try:
-                        obj, index = decoder.raw_decode(content)
-                        items_list = []
-                        if isinstance(obj, dict) and "data" in obj:
-                            inner = obj["data"]
-                            if isinstance(inner, dict) and "items" in inner:
-                                items_list = inner["items"]
-                        elif isinstance(obj, list):
-                            items_list = obj
-                        elif isinstance(obj, dict) and "items" in obj:
-                            items_list = obj["items"]
-                            
-                        for raw_item in items_list:
-                            m_id = raw_item.get("miner_id")
-                            qty = int(raw_item.get("quantity", 1))
-                            if m_id:
-                                m_id = str(m_id).lower()
-                                id_quantities[m_id] = id_quantities.get(m_id, 0) + qty
-                        content = content[index:].lstrip()
-                    except json.JSONDecodeError:
-                        break
-            
-            if not id_quantities:
-                raise ValueError("No valid inventory items found in file.")
-
-            self.inventory_is_valid = True
-        except Exception as e:
-            self.inventory_is_valid = False
-            QMessageBox.critical(self, "Import Error", f"Failed to parse file: {e}")
+        json_content = clean_and_parse_json(path)
+        if not json_content:
+            QMessageBox.critical(self, "Import Error", "Failed to parse file.")
             return
 
+        id_quantities = parse_personal_inventory(json_content)
+        if not id_quantities:
+            QMessageBox.critical(self, "Import Error", "No valid inventory items found.")
+            return
+
+        self.inventory_is_valid = True
         self.personal_data = []
         for m_id, qty in id_quantities.items():
             if m_id in self.tag_to_item_map:
@@ -460,25 +446,20 @@ class InventorySection(QWidget):
         
         output_items = []
         for item in self.personal_data:
-            tag = None
-            if item.get("type") == "miner":
-                tag = item.get("level_id_tag")
-            elif item.get("type") == "rack":
-                tag = item.get("rack_id_tag")
-
+            tag = item.get("level_id_tag") if item.get("type") == "miner" else item.get("rack_id_tag")
             if tag:
+                lvl_val = 0
+                if item.get("type") == "miner":
+                    lvl_val = 0 if item.get("is_legacy_item") else (item.get("lvl", 1) - 1)
+
                 output_items.append({
                     "name": item.get("name"),
-                    "level": item.get("lvl", 1) - 1 if item.get("type") == "miner" else 0, 
+                    "level": lvl_val, 
                     "miner_id": str(tag).lower(),
                     "quantity": item.get("quantity", 0)
                 })
         try:
-            final_data = {
-                "success": True,
-                "data": {"items": output_items},
-                "error": ""
-            }
+            final_data = {"success": True, "data": {"items": output_items}, "error": ""}
             with open(path, 'w', encoding='utf-8') as f:
                 json.dump(final_data, f, indent=4)
         except Exception as e:
@@ -511,7 +492,7 @@ class InventorySection(QWidget):
                 'slot_size': data.get('slot_size', 1), 'power_val': parse_hashrate_to_gh(data.get('power', '0')),
                 'bonus_val': parse_percentage_to_float(data.get('bonus', '0')), 'lvl': data.get('lvl', 1),
                 'type': data.get('type', 'miner'), 'source': 'Personal', 'quantity': 1, 'level_id_tag': None,
-                'timestamp': time.time()
+                'timestamp': time.time(), 'is_legacy_item': False
             }
             self.personal_data.append(custom_item)
             self.trigger_refresh()
@@ -567,7 +548,6 @@ class InventorySection(QWidget):
             min_bonus = float(self.bonus_from_edit.text()) if self.bonus_from_edit.text() else -1.0
         except ValueError:
             min_bonus = -1.0
-            
         try:
             max_bonus = float(self.bonus_to_edit.text()) if self.bonus_to_edit.text() else 99999.0
         except ValueError:
@@ -577,15 +557,12 @@ class InventorySection(QWidget):
         for item in source_list:
             if is_personal and item.get('quantity', 0) <= 0: continue
             if item['type'] != itype: continue
-            
             if is_personal and itype == 'miner' and hide_placed:
                 item_tag = item.get('level_id_tag')
                 if item_tag and item_tag.lower() in self.placed_item_keys:
                     continue
-
             if min_bonus != -1.0 and item.get('bonus_val', 0.0) < min_bonus: continue
             if max_bonus != 99999.0 and item.get('bonus_val', 0.0) > max_bonus: continue
-
             item_name = item['name'].lower()
             set_id = item.get('set_global_id')
             set_name_str = (self.set_names_map.get(set_id, '')).lower().replace('_', ' ')
@@ -602,7 +579,6 @@ class InventorySection(QWidget):
             filtered.sort(key=lambda x: (x.get('bonus_val', 0), x.get('power_val', 0)), reverse=True)
         elif sort_mode == "Newest First":
             filtered.sort(key=lambda x: x.get('timestamp', 0), reverse=True)
-            
         self.model.update_data(filtered)
 
     def scroll_next(self):

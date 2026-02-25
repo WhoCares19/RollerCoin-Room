@@ -66,10 +66,16 @@ def calculate_power_breakdown(rooms_state_dict):
 
     seen_miner_bonus = set()
 
-    for room_id, racks_list in rooms_state_dict.items():
+    for room_id, room_data in rooms_state_dict.items():
         room_base_power[room_id] = 0.0
         room_rack_bonus[room_id] = 0.0
         room_flat_set_power[room_id] = 0.0
+        
+        # Determine if data is the new dict format or the old list format
+        if isinstance(room_data, dict):
+            racks_list = room_data.get('racks', [])
+        else:
+            racks_list = room_data
         
         for rack_entry in racks_list:
             rack_data = rack_entry.get('rack_data', {})
@@ -105,7 +111,12 @@ def calculate_power_breakdown(rooms_state_dict):
 
     if os.path.exists(CATALOG_DB_PATH):
         all_set_miners_per_rack = {} 
-        for room_id, racks_list in rooms_state_dict.items():
+        for room_id, room_data in rooms_state_dict.items():
+            if isinstance(room_data, dict):
+                racks_list = room_data.get('racks', [])
+            else:
+                racks_list = room_data
+
             for rack_entry in racks_list:
                 rack_data = rack_entry.get('rack_data', {})
                 rack_set_id = rack_data.get('set_global_id')

@@ -430,7 +430,10 @@ class RoomView(QWidget):
 
     def __init__(self, room_id):
         super().__init__()
-        self.room_id = room_id; self.placeholders = []; self.init_ui()
+        self.room_id = room_id
+        self.room_uuid = None
+        self.placeholders = []
+        self.init_ui()
 
     def init_ui(self):
         self.grid = QGridLayout(self); self.grid.setSpacing(10); self.grid.setContentsMargins(10, 10, 10, 10)
@@ -453,12 +456,15 @@ class RoomView(QWidget):
         if success and item_data.get('source') == 'Personal': self.item_placed.emit(item_data)
 
     def get_room_state(self):
-        return [{
-            'rack_data': p.rack.data,
-            'rack_bonus': p.rack.data.get('bonus_val', 0), 
-            'rows': p.rack.rows_data,
-            'is_locked': p.rack.is_locked
-        } for p in self.placeholders if p.rack]
+        return {
+            'room_uuid': self.room_uuid,
+            'racks': [{
+                'rack_data': p.rack.data,
+                'rack_bonus': p.rack.data.get('bonus_val', 0), 
+                'rows': p.rack.rows_data,
+                'is_locked': p.rack.is_locked
+            } for p in self.placeholders if p.rack]
+        }
 
     def clear_room(self, only_miners=False):
         for p in self.placeholders:
