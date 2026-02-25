@@ -1,0 +1,1340 @@
+{
+    "success": true,
+    "data": {
+        "items": [
+            {
+                "name": "El Detonador",
+                "level": 0,
+                "miner_id": "68723e26411d00ff27a83adc",
+                "quantity": 0
+            },
+            {
+                "name": "Photon",
+                "level": 0,
+                "miner_id": "61532146db5008102f9f77e4",
+                "quantity": 1
+            },
+            {
+                "name": "Roller-Mini Express",
+                "level": 0,
+                "miner_id": "6628f3e80461cca22c8b85f6",
+                "quantity": 4
+            },
+            {
+                "name": "CyberOracle",
+                "level": 0,
+                "miner_id": "655340c16b3aad78aebc3663",
+                "quantity": 0
+            },
+            {
+                "name": "BasaltRig",
+                "level": 0,
+                "miner_id": "68b6d9dcf58321ae064c19e1",
+                "quantity": 18
+            },
+            {
+                "name": "BelleDeerDuo",
+                "level": 0,
+                "miner_id": "657099373c4611957323da53",
+                "quantity": 1
+            },
+            {
+                "name": "Emperor's Treasure",
+                "level": 0,
+                "miner_id": "61f9356a8b46ce688939024f",
+                "quantity": 0
+            },
+            {
+                "name": "Ferris Wheel Master",
+                "level": 0,
+                "miner_id": "64f5cbcf9e4d6286408925da",
+                "quantity": 3
+            },
+            {
+                "name": "Almost-Zero",
+                "level": 0,
+                "miner_id": "657305c05d9e34da773e3406",
+                "quantity": 23
+            },
+            {
+                "name": "Booo!",
+                "level": 0,
+                "miner_id": "65326d37a072ea9506f9a0f7",
+                "quantity": 1
+            },
+            {
+                "name": "Crypto Temple",
+                "level": 0,
+                "miner_id": "65ba2fd043dcad8f6d10ff08",
+                "quantity": 2
+            },
+            {
+                "name": "Mergedge Mk. I",
+                "level": 0,
+                "miner_id": "646ddba0260e7d19c91846b9",
+                "quantity": 1
+            },
+            {
+                "name": "Guts",
+                "level": 0,
+                "miner_id": "61532146db5008102f9f77f6",
+                "quantity": 3
+            },
+            {
+                "name": "TAPEMAN",
+                "level": 0,
+                "miner_id": "610a9b67bf6b53744c890647",
+                "quantity": 22
+            },
+            {
+                "name": "CP-306",
+                "level": 0,
+                "miner_id": "610a9c61bf6b53744c8ea0d4",
+                "quantity": 17
+            },
+            {
+                "name": "Silverline B",
+                "level": 0,
+                "miner_id": "6628f18c0461cca22c8b4dde",
+                "quantity": 18
+            },
+            {
+                "name": "WheelWonder",
+                "level": 0,
+                "miner_id": "657099853c4611957323daab",
+                "quantity": 3
+            },
+            {
+                "name": "Voting Power",
+                "level": 0,
+                "miner_id": "68075d468212adc3b92b3055",
+                "quantity": 0
+            },
+            {
+                "name": "Tron",
+                "level": 0,
+                "miner_id": "650aa72b48ee2c2ada96177e",
+                "quantity": 10
+            },
+            {
+                "name": "Crypto Call",
+                "level": 0,
+                "miner_id": "68e792139f36c49e72dfb7cf",
+                "quantity": 5
+            },
+            {
+                "name": "Mineapple",
+                "level": 0,
+                "miner_id": "6687bf4f7643815232d5f741",
+                "quantity": 2
+            },
+            {
+                "name": "Aegis of Ultramar",
+                "level": 0,
+                "miner_id": "66df0555e0dd3530da81222d",
+                "quantity": 3
+            },
+            {
+                "name": "Smaller Paradise Pier",
+                "level": 0,
+                "miner_id": "650b1a0b48ee2c2ada965185",
+                "quantity": 2
+            },
+            {
+                "name": "Cancer",
+                "level": 0,
+                "miner_id": "67a3d3d379efd774f15e120b",
+                "quantity": 6
+            },
+            {
+                "name": "Aurum",
+                "level": 0,
+                "miner_id": "60c7441465dce86c86607522",
+                "quantity": 1
+            },
+            {
+                "name": "Dragon Wing",
+                "level": 0,
+                "miner_id": "631b561ba775e04d9a285494",
+                "quantity": 2
+            },
+            {
+                "name": "RollerMiner S5+",
+                "level": 0,
+                "miner_id": "5a0b08a9d1d9ee5894f36f2f",
+                "quantity": 25
+            },
+            {
+                "name": "Prisma",
+                "level": 0,
+                "miner_id": "60c743d665dce86c865f2251",
+                "quantity": 0
+            },
+            {
+                "name": "Crimson Bloom",
+                "level": 0,
+                "miner_id": "61f9356a8b46ce6889390250",
+                "quantity": 1
+            },
+            {
+                "name": "Luminous Pulse",
+                "level": 0,
+                "miner_id": "64d6179937a9be081c019cf9",
+                "quantity": 5
+            },
+            {
+                "name": "GPUbit",
+                "level": 0,
+                "miner_id": "650042162216e1841eba8480",
+                "quantity": 9
+            },
+            {
+                "name": "Game Switcher",
+                "level": 0,
+                "miner_id": "683dc2a9a556319b9a73cd03",
+                "quantity": 0
+            },
+            {
+                "name": "Anti\u2013Phaze",
+                "level": 0,
+                "miner_id": "61532146db5008102f9f77e3",
+                "quantity": 1
+            },
+            {
+                "name": "Heretic Opera Miner",
+                "level": 0,
+                "miner_id": "65326cd3a072ea9506f9a018",
+                "quantity": 3
+            },
+            {
+                "name": "JBS-200",
+                "level": 0,
+                "miner_id": "610a9ae2bf6b53744c860a30",
+                "quantity": 26
+            },
+            {
+                "name": "\u9752\u706b\u9f99 (Azure Dragon)",
+                "level": 0,
+                "miner_id": "61f9356a8b46ce688939024e",
+                "quantity": 0
+            },
+            {
+                "name": "Fortune\u2019s Charm",
+                "level": 0,
+                "miner_id": "61f9356a8b46ce6889390253",
+                "quantity": 0
+            },
+            {
+                "name": "Migrant Fleet",
+                "level": 0,
+                "miner_id": "66f5215ae0dd3530daaafc8d",
+                "quantity": 3
+            },
+            {
+                "name": "King of Beasts",
+                "level": 0,
+                "miner_id": "61f9356a8b46ce6889390251",
+                "quantity": 4
+            },
+            {
+                "name": "Kawsay Saphi",
+                "level": 0,
+                "miner_id": "65cb5322dc319c3e4664234a",
+                "quantity": 5
+            },
+            {
+                "name": "Crypto Concertina",
+                "level": 0,
+                "miner_id": "65143a19db2bb90f6a52b59c",
+                "quantity": 0
+            },
+            {
+                "name": "Bitfoot",
+                "level": 0,
+                "miner_id": "6573056d5d9e34da773e339f",
+                "quantity": 1
+            },
+            {
+                "name": "ChainPath Map",
+                "level": 0,
+                "miner_id": "662bbbcd8f8dfec9cf24a6e8",
+                "quantity": 1
+            },
+            {
+                "name": "Leo",
+                "level": 0,
+                "miner_id": "67a3d82279efd774f15e19f2",
+                "quantity": 0
+            },
+            {
+                "name": "Dark Energy",
+                "level": 0,
+                "miner_id": "650eb4cd506e5105f3e8097a",
+                "quantity": 2
+            },
+            {
+                "name": "The Moainer",
+                "level": 0,
+                "miner_id": "65cb4e7fdc319c3e4664203a",
+                "quantity": 3
+            },
+            {
+                "name": "JBS-144",
+                "level": 0,
+                "miner_id": "610a9bcabf6b53744c8b3c79",
+                "quantity": 19
+            },
+            {
+                "name": "Pegatron",
+                "level": 0,
+                "miner_id": "67a3e47a79efd774f15e2331",
+                "quantity": 0
+            },
+            {
+                "name": "Banhammer Master",
+                "level": 2,
+                "miner_id": "6892166d73641cbc58e441e4",
+                "quantity": 0
+            },
+            {
+                "name": "La Venus de Milo",
+                "level": 0,
+                "miner_id": "65ba2a9643dcad8f6d10fd78",
+                "quantity": 3
+            },
+            {
+                "name": "Bergedge",
+                "level": 0,
+                "miner_id": "64ec900822c75110b9b093c3",
+                "quantity": 17
+            },
+            {
+                "name": "TYPE-Z",
+                "level": 0,
+                "miner_id": "610a9c19bf6b53744c8d085b",
+                "quantity": 21
+            },
+            {
+                "name": "Redline Garry",
+                "level": 0,
+                "miner_id": "6628f4a70461cca22c8ba7fd",
+                "quantity": 1
+            },
+            {
+                "name": "Queen of Spin",
+                "level": 0,
+                "miner_id": "6398e9e195b70ff678b1e565",
+                "quantity": 1
+            },
+            {
+                "name": "Pisces",
+                "level": 0,
+                "miner_id": "67a3d45f79efd774f15e135c",
+                "quantity": 2
+            },
+            {
+                "name": "Shaolin Temple",
+                "level": 0,
+                "miner_id": "63ca6f1d547cfab9a2c51bc2",
+                "quantity": 2
+            },
+            {
+                "name": "Golden RC-Train",
+                "level": 0,
+                "miner_id": "6628fabe0461cca22c8c14b0",
+                "quantity": 2
+            },
+            {
+                "name": "The Glimpse",
+                "level": 0,
+                "miner_id": "60c7438d65dce86c865da09e",
+                "quantity": 0
+            },
+            {
+                "name": "Quantum Queller",
+                "level": 0,
+                "miner_id": "66f1bed1e0dd3530daa2e342",
+                "quantity": 2
+            },
+            {
+                "name": "Devil's Carnival",
+                "level": 0,
+                "miner_id": "65326ea4a072ea9506f9a257",
+                "quantity": 0
+            },
+            {
+                "name": "Scorpio",
+                "level": 0,
+                "miner_id": "67a3d51679efd774f15e14ae",
+                "quantity": 1
+            },
+            {
+                "name": "RollerMiner S4",
+                "level": 0,
+                "miner_id": "59f05bdda8fa9b726b0742ca",
+                "quantity": 20
+            },
+            {
+                "name": "RollerMiner S9",
+                "level": 0,
+                "miner_id": "5a0b08b0d1d9ee5894f36f32",
+                "quantity": 8
+            },
+            {
+                "name": "Boot Loot",
+                "level": 0,
+                "miner_id": "68723d88411d00ff27a839c3",
+                "quantity": 0
+            },
+            {
+                "name": "ASICbit",
+                "level": 0,
+                "miner_id": "64f5d71e9e4d628640892a08",
+                "quantity": 12
+            },
+            {
+                "name": "Rolleron Miner 761",
+                "level": 0,
+                "miner_id": "5a0b08afd1d9ee5894f36f31",
+                "quantity": 11
+            },
+            {
+                "name": "The Pawfather",
+                "level": 0,
+                "miner_id": "67e2923af3afcae7918a2b04",
+                "quantity": 0
+            },
+            {
+                "name": "ClayRig",
+                "level": 0,
+                "miner_id": "68b6daa0f58321ae064c1bae",
+                "quantity": 7
+            },
+            {
+                "name": "Dragonroller 16T",
+                "level": 0,
+                "miner_id": "5a0b08b1d1d9ee5894f36f33",
+                "quantity": 18
+            },
+            {
+                "name": "Red/Blue Protocol",
+                "level": 0,
+                "miner_id": "68cd73dcbedeb9a12ef65244",
+                "quantity": 1
+            },
+            {
+                "name": "The Awakener",
+                "level": 0,
+                "miner_id": "68cd7354bedeb9a12ef650cb",
+                "quantity": 1
+            },
+            {
+                "name": "TAPEBOY",
+                "level": 0,
+                "miner_id": "610a9a96bf6b53744c845ba0",
+                "quantity": 20
+            },
+            {
+                "name": "CP-106",
+                "level": 0,
+                "miner_id": "610a9b31bf6b53744c87cedc",
+                "quantity": 14
+            },
+            {
+                "name": "RollerMiner S7",
+                "level": 0,
+                "miner_id": "5a0b022dd1d9ee5894f36f2d",
+                "quantity": 19
+            },
+            {
+                "name": "BeetCoiner",
+                "level": 0,
+                "miner_id": "6687bde47643815232d5f0c6",
+                "quantity": 12
+            },
+            {
+                "name": "Coliseum",
+                "level": 0,
+                "miner_id": "65ba335f43dcad8f6d110317",
+                "quantity": 11
+            },
+            {
+                "name": "Underdark Delver",
+                "level": 0,
+                "miner_id": "6597be0cf3433c802f2f11cf",
+                "quantity": 7
+            },
+            {
+                "name": "Rolleron 741",
+                "level": 0,
+                "miner_id": "5a0b08a7d1d9ee5894f36f2e",
+                "quantity": 12
+            },
+            {
+                "name": "Rollerfury B8",
+                "level": 0,
+                "miner_id": "5a0b08b3d1d9ee5894f36f34",
+                "quantity": 4
+            },
+            {
+                "name": "BitAce",
+                "level": 0,
+                "miner_id": "650043862216e1841eba852f",
+                "quantity": 76
+            },
+            {
+                "name": "Ancient Icecraft",
+                "level": 0,
+                "miner_id": "65855965430203bab2b75b1c",
+                "quantity": 3
+            },
+            {
+                "name": "RollerMiner R4",
+                "level": 0,
+                "miner_id": "5a0b08abd1d9ee5894f36f30",
+                "quantity": 15
+            },
+            {
+                "name": "Banjo Blaster",
+                "level": 0,
+                "miner_id": "68723cd5411d00ff27a838f1",
+                "quantity": 0
+            },
+            {
+                "name": "Shrumee",
+                "level": 0,
+                "miner_id": "61532146db5008102f9f77f4",
+                "quantity": 0
+            },
+            {
+                "name": "Frostbite",
+                "level": 0,
+                "miner_id": "674dd7bbcbe1e47b27065a5b",
+                "quantity": 3
+            },
+            {
+                "name": "Gear of Terror",
+                "level": 0,
+                "miner_id": "67166eb4b4fc680d46c4e421",
+                "quantity": 1
+            },
+            {
+                "name": "Plague Poison",
+                "level": 0,
+                "miner_id": "68f75e7d9f36c49e72f28f8b",
+                "quantity": 0
+            },
+            {
+                "name": "Not Wanted",
+                "level": 0,
+                "miner_id": "68c2cf83e804ea5083708553",
+                "quantity": 0
+            },
+            {
+                "name": "The Corrupt Star",
+                "level": 0,
+                "miner_id": "68723c0a411d00ff27a837d8",
+                "quantity": 0
+            },
+            {
+                "name": "Skull Rancher",
+                "level": 0,
+                "miner_id": "68723a5a411d00ff27a835c6",
+                "quantity": 8
+            },
+            {
+                "name": "BitAce",
+                "level": 4,
+                "miner_id": "650043862216e1841eba854a",
+                "quantity": 0
+            },
+            {
+                "name": "CameraMiner",
+                "level": 0,
+                "miner_id": "6512a5c1db2bb90f6a5249e9",
+                "quantity": 1
+            },
+            {
+                "name": "Ragnarwhack",
+                "level": 0,
+                "miner_id": "680f5c4a672b78a8fb8fed4f",
+                "quantity": 2
+            },
+            {
+                "name": "ASICbit",
+                "level": 3,
+                "miner_id": "64f5d71e9e4d628640892a1b",
+                "quantity": 1
+            },
+            {
+                "name": "GPUbit",
+                "level": 3,
+                "miner_id": "650042162216e1841eba8493",
+                "quantity": 1
+            },
+            {
+                "name": "Real Sugar",
+                "level": 1,
+                "miner_id": "6596ba61f3433c802f2ef548",
+                "quantity": 1
+            },
+            {
+                "name": "Black Cat",
+                "level": 0,
+                "miner_id": "65326c3ea072ea9506f99ef5",
+                "quantity": 1
+            },
+            {
+                "name": "Nuc",
+                "level": 0,
+                "miner_id": "61532146db5008102f9f77f8",
+                "quantity": 0
+            },
+            {
+                "name": "Lava-Box",
+                "level": 0,
+                "miner_id": "618d1dda8f5ef2744b7d2383",
+                "quantity": 0
+            },
+            {
+                "name": "Wishing Bell",
+                "level": 0,
+                "miner_id": "61b9cce478d63d64cd626fe2",
+                "quantity": 1
+            },
+            {
+                "name": "BitAce",
+                "level": 2,
+                "miner_id": "650043862216e1841eba853a",
+                "quantity": 1
+            },
+            {
+                "name": "The Blup",
+                "level": 0,
+                "miner_id": "618d1dda8f5ef2744b7d2384",
+                "quantity": 0
+            },
+            {
+                "name": "XLZ-01",
+                "level": 0,
+                "miner_id": "618d1dda8f5ef2744b7d2386",
+                "quantity": 0
+            },
+            {
+                "name": "Purple Snowflake",
+                "level": 0,
+                "miner_id": "61b9cce478d63d64cd626fdf",
+                "quantity": 1
+            },
+            {
+                "name": "Crimson Spark",
+                "level": 0,
+                "miner_id": "61f9356a8b46ce6889390252",
+                "quantity": 1
+            },
+            {
+                "name": "ASICbit",
+                "level": 1,
+                "miner_id": "64f5d71e9e4d628640892a0b",
+                "quantity": 1
+            },
+            {
+                "name": "ASICbit",
+                "level": 2,
+                "miner_id": "64f5d71e9e4d628640892a13",
+                "quantity": 1
+            },
+            {
+                "name": "GPUbit",
+                "level": 1,
+                "miner_id": "650042162216e1841eba8483",
+                "quantity": 1
+            },
+            {
+                "name": "BitAce",
+                "level": 1,
+                "miner_id": "650043862216e1841eba8532",
+                "quantity": 1
+            },
+            {
+                "name": "HuddleWaddle",
+                "level": 0,
+                "miner_id": "657097163c4611957323d7d7",
+                "quantity": 1
+            },
+            {
+                "name": "Guard Goose",
+                "level": 0,
+                "miner_id": "65ba1f0b43dcad8f6d10f724",
+                "quantity": 1
+            },
+            {
+                "name": "One Horse Power",
+                "level": 0,
+                "miner_id": "6628ed8c0461cca22c8af5cb",
+                "quantity": 1
+            },
+            {
+                "name": "Power Symbol",
+                "level": 0,
+                "miner_id": "644bb225648294b4642f368d",
+                "quantity": 1
+            },
+            {
+                "name": "Star Symbol",
+                "level": 0,
+                "miner_id": "644bb270648294b4642f368e",
+                "quantity": 1
+            },
+            {
+                "name": "Fang Symbol",
+                "level": 0,
+                "miner_id": "644bb5de648294b4642f368f",
+                "quantity": 1
+            },
+            {
+                "name": "Raver Crab",
+                "level": 0,
+                "miner_id": "629616e8530f48a8e76de5e4",
+                "quantity": 1
+            },
+            {
+                "name": "Leap, The Frogo",
+                "level": 0,
+                "miner_id": "631b5617a775e04d9a28543b",
+                "quantity": 1
+            },
+            {
+                "name": "Doggie-Woogie",
+                "level": 0,
+                "miner_id": "63930d86380ccf549d7f5c27",
+                "quantity": 1
+            },
+            {
+                "name": "Demon Speeding",
+                "level": 0,
+                "miner_id": "6422f238f1cff2d95bf745a0",
+                "quantity": 1
+            },
+            {
+                "name": "Katsuhito",
+                "level": 0,
+                "miner_id": "64a69674af7caabb3d1151f8",
+                "quantity": 1
+            },
+            {
+                "name": "Whatta Duck",
+                "level": 0,
+                "miner_id": "650aa70448ee2c2ada96176c",
+                "quantity": 1
+            },
+            {
+                "name": "RollerArc S1",
+                "level": 1,
+                "miner_id": "631f79648238ed283a233a82",
+                "quantity": 2
+            },
+            {
+                "name": "Minerzaurus",
+                "level": 0,
+                "miner_id": "624449f142a0cd1b7d693be8",
+                "quantity": 1
+            },
+            {
+                "name": "Royal Necklace",
+                "level": 0,
+                "miner_id": "65d7b6b7d68c8ab1d87e79e8",
+                "quantity": 2
+            },
+            {
+                "name": "Afterparty",
+                "level": 0,
+                "miner_id": "6296227e530f48a8e7a34e16",
+                "quantity": 1
+            },
+            {
+                "name": "Wavestorm",
+                "level": 0,
+                "miner_id": "63d900ee547cfab9a2a3c5cd",
+                "quantity": 1
+            },
+            {
+                "name": "Dusty Drifter",
+                "level": 0,
+                "miner_id": "6872396b411d00ff27a83359",
+                "quantity": 8
+            },
+            {
+                "name": "Retired Sheriff",
+                "level": 0,
+                "miner_id": "68723af2411d00ff27a83704",
+                "quantity": 7
+            },
+            {
+                "name": "Gandhi's Splittie",
+                "level": 0,
+                "miner_id": "63930d86380ccf549d7f5c2d",
+                "quantity": 1
+            },
+            {
+                "name": "Champion's Belt",
+                "level": 0,
+                "miner_id": "6879ffd5265f9bf2be120194",
+                "quantity": 1
+            },
+            {
+                "name": "Mergedge",
+                "level": 0,
+                "miner_id": "631b5619a775e04d9a28546b",
+                "quantity": 2
+            },
+            {
+                "name": "Cryostone Relic",
+                "level": 0,
+                "miner_id": "657305285d9e34da773e3347",
+                "quantity": 1
+            },
+            {
+                "name": "M-Rex",
+                "level": 1,
+                "miner_id": "63c0134d8606868c5f347994",
+                "quantity": 1
+            },
+            {
+                "name": "Vaporwave Voyager",
+                "level": 0,
+                "miner_id": "64ec936822c75110b9b09747",
+                "quantity": 1
+            },
+            {
+                "name": "Bergedge",
+                "level": 1,
+                "miner_id": "64ec914c22c75110b9b0954e",
+                "quantity": 1
+            },
+            {
+                "name": "Road Warrior",
+                "level": 0,
+                "miner_id": "644bbdd2648294b4642f3695",
+                "quantity": 1
+            },
+            {
+                "name": "Bergedge",
+                "level": 2,
+                "miner_id": "64ec914c22c75110b9b09558",
+                "quantity": 2
+            },
+            {
+                "name": "Wooden Wrath",
+                "level": 0,
+                "miner_id": "680f5b9b672b78a8fb8febee",
+                "quantity": 6
+            },
+            {
+                "name": "The Nirvana",
+                "level": 0,
+                "miner_id": "650995b748ee2c2ada95fd44",
+                "quantity": 0
+            },
+            {
+                "name": "Gravity",
+                "level": 0,
+                "miner_id": "61532146db5008102f9f77e1",
+                "quantity": 1
+            },
+            {
+                "name": "Diamond Wagon",
+                "level": 0,
+                "miner_id": "662906630461cca22c8cbd04",
+                "quantity": 1
+            },
+            {
+                "name": "Centinela",
+                "level": 0,
+                "miner_id": "651ac9bc89841546fda69172",
+                "quantity": 1
+            },
+            {
+                "name": "Da-Vinci's Elizabeth",
+                "level": 0,
+                "miner_id": "6628fc640461cca22c8c2d1a",
+                "quantity": 1
+            },
+            {
+                "name": "ExaBara",
+                "level": 0,
+                "miner_id": "668e76627643815232e5682b",
+                "quantity": 7
+            },
+            {
+                "name": "Americana 1-777",
+                "level": 2,
+                "miner_id": "649d8d56636060de746abb84",
+                "quantity": 1
+            },
+            {
+                "name": "Bitfoot",
+                "level": 1,
+                "miner_id": "6573056d5d9e34da773e33a2",
+                "quantity": 2
+            },
+            {
+                "name": "Steamwheedle",
+                "level": 0,
+                "miner_id": "611e2b04bf6b53744cd0c093",
+                "quantity": 1
+            },
+            {
+                "name": "Ancient Icecraft",
+                "level": 1,
+                "miner_id": "65855965430203bab2b75b1f",
+                "quantity": 4
+            },
+            {
+                "name": "Box of Wonders",
+                "level": 1,
+                "miner_id": "631f79428238ed283a2338fc",
+                "quantity": 2
+            },
+            {
+                "name": "DraMatic",
+                "level": 0,
+                "miner_id": "65a930919b2efe7a29c68f4c",
+                "quantity": 1
+            },
+            {
+                "name": "Fire Forger",
+                "level": 0,
+                "miner_id": "645b8a87eccd3c43207474d0",
+                "quantity": 1
+            },
+            {
+                "name": "Acropolis",
+                "level": 0,
+                "miner_id": "62444e1b42a0cd1b7d7ae198",
+                "quantity": 1
+            },
+            {
+                "name": "Ramesses II",
+                "level": 0,
+                "miner_id": "62444e4f42a0cd1b7d7bce01",
+                "quantity": 1
+            },
+            {
+                "name": "Richie's Castle",
+                "level": 0,
+                "miner_id": "62444e8a42a0cd1b7d7ccef3",
+                "quantity": 1
+            },
+            {
+                "name": "Uniminer-42",
+                "level": 0,
+                "miner_id": "6244499b42a0cd1b7d67ca1e",
+                "quantity": 1
+            },
+            {
+                "name": "Tape-Side-B",
+                "level": 0,
+                "miner_id": "63930d86380ccf549d7f5c2f",
+                "quantity": 1
+            },
+            {
+                "name": "Venus",
+                "level": 0,
+                "miner_id": "65cb5739dc319c3e4664270d",
+                "quantity": 1
+            },
+            {
+                "name": "Cubo-Cryptocoin",
+                "level": 0,
+                "miner_id": "6570a6f03c4611957323ec65",
+                "quantity": 16
+            },
+            {
+                "name": "Redline Garry",
+                "level": 1,
+                "miner_id": "6628f4a70461cca22c8ba800",
+                "quantity": 1
+            },
+            {
+                "name": "Petroglyph",
+                "level": 0,
+                "miner_id": "62444c9142a0cd1b7d749f2a",
+                "quantity": 1
+            },
+            {
+                "name": "SOL AR",
+                "level": 0,
+                "miner_id": "659d3b9eacd8925c3cb695e0",
+                "quantity": 1
+            },
+            {
+                "name": "Mini-Blue 13",
+                "level": 0,
+                "miner_id": "6628f5800461cca22c8beea0",
+                "quantity": 1
+            },
+            {
+                "name": "Chaise Longue",
+                "level": 0,
+                "miner_id": "62961778530f48a8e77085e8",
+                "quantity": 1
+            },
+            {
+                "name": "The Sacrifice",
+                "level": 0,
+                "miner_id": "62444dee42a0cd1b7d7a2222",
+                "quantity": 1
+            },
+            {
+                "name": "Token Surfboard",
+                "level": 0,
+                "miner_id": "629618ca530f48a8e77652ef",
+                "quantity": 4
+            },
+            {
+                "name": "Blacktop Bandit",
+                "level": 0,
+                "miner_id": "644bbe15648294b4642f3696",
+                "quantity": 1
+            },
+            {
+                "name": "Golden Goal",
+                "level": 0,
+                "miner_id": "68385f8de2ea0a4c8275fd85",
+                "quantity": 1
+            },
+            {
+                "name": "Roller7Coin",
+                "level": 0,
+                "miner_id": "680b6781672b78a8fb89cc23",
+                "quantity": 1
+            },
+            {
+                "name": "Liberty Digger",
+                "level": 0,
+                "miner_id": "649997687f28d1395d958cdc",
+                "quantity": 1
+            },
+            {
+                "name": "Paradise Pier",
+                "level": 0,
+                "miner_id": "64a6cef0af7caabb3d11521a",
+                "quantity": 2
+            },
+            {
+                "name": "DjBone",
+                "level": 0,
+                "miner_id": "65326e78a072ea9506f9a1ff",
+                "quantity": 1
+            },
+            {
+                "name": "BronzeCorn",
+                "level": 0,
+                "miner_id": "6687ccfc7643815232d6402d",
+                "quantity": 1
+            },
+            {
+                "name": "Night Witnesses",
+                "level": 0,
+                "miner_id": "65326ca8a072ea9506f99fc0",
+                "quantity": 1
+            },
+            {
+                "name": "Awaken",
+                "level": 0,
+                "miner_id": "65326c7ba072ea9506f99f68",
+                "quantity": 1
+            },
+            {
+                "name": "Isotope Miner 23",
+                "level": 0,
+                "miner_id": "6463a05715a6792f949b49e9",
+                "quantity": 1
+            },
+            {
+                "name": "HauntedHouse",
+                "level": 0,
+                "miner_id": "65326e53a072ea9506f9a1a7",
+                "quantity": 1
+            },
+            {
+                "name": "BitLoco",
+                "level": 0,
+                "miner_id": "657097f63c4611957323d90a",
+                "quantity": 1
+            },
+            {
+                "name": "Miami Mirage",
+                "level": 0,
+                "miner_id": "64a6cf54af7caabb3d11521c",
+                "quantity": 1
+            },
+            {
+                "name": "Snowster-9001",
+                "level": 0,
+                "miner_id": "6398e9e195b70ff678b1e56a",
+                "quantity": 1
+            },
+            {
+                "name": "Nuclearburg",
+                "level": 0,
+                "miner_id": "6463a05715a6792f949b49e7",
+                "quantity": 1
+            },
+            {
+                "name": "Roy and Silo",
+                "level": 0,
+                "miner_id": "6398e9e195b70ff678b1e569",
+                "quantity": 1
+            },
+            {
+                "name": "Gas Town Bitminer",
+                "level": 0,
+                "miner_id": "6422ff81b78c58eb24801ec7",
+                "quantity": 1
+            },
+            {
+                "name": "Your Friend Turing",
+                "level": 0,
+                "miner_id": "6509905a48ee2c2ada95faf9",
+                "quantity": 1
+            },
+            {
+                "name": "The Black Pearl",
+                "level": 1,
+                "miner_id": "631f7a358238ed283a234428",
+                "quantity": 1
+            },
+            {
+                "name": "Velociminer",
+                "level": 1,
+                "miner_id": "63c013498606868c5f34794e",
+                "quantity": 1
+            },
+            {
+                "name": "8blessed",
+                "level": 1,
+                "miner_id": "631f7b018238ed283a234d8d",
+                "quantity": 1
+            },
+            {
+                "name": "Bergedge",
+                "level": 4,
+                "miner_id": "64ec914c22c75110b9b0956c",
+                "quantity": 1
+            },
+            {
+                "name": "Unity",
+                "level": 0,
+                "miner_id": "622f42d9a258d58160aadb92",
+                "quantity": 1
+            },
+            {
+                "name": "Sovereignty",
+                "level": 0,
+                "miner_id": "622f4123a258d58160a2f1ce",
+                "quantity": 1
+            },
+            {
+                "name": "ASICbit",
+                "level": 4,
+                "miner_id": "rare id",
+                "quantity": 0
+            },
+            {
+                "name": "Snowy Blowy",
+                "level": 0,
+                "miner_id": "61b9cce178d63d64cd626fd1",
+                "quantity": 0
+            },
+            {
+                "name": "White Christmas",
+                "level": 3,
+                "miner_id": "6399c3881c483a58f70e9dd8",
+                "quantity": 0
+            },
+            {
+                "name": "Proof of Goal",
+                "level": 0,
+                "miner_id": "6835d943e2ea0a4c826fd081",
+                "quantity": 0
+            },
+            {
+                "name": "Shifter",
+                "level": 0,
+                "miner_id": "61532146db5008102f9f77ef",
+                "quantity": 1
+            },
+            {
+                "name": "Smaller Paradise Pier",
+                "level": 4,
+                "miner_id": "650b1a0b48ee2c2ada9651a0",
+                "quantity": 0
+            },
+            {
+                "name": "El Detonador",
+                "level": 2,
+                "miner_id": "68723e26411d00ff27a83ae7",
+                "quantity": 0
+            },
+            {
+                "name": "Trickster's Horn",
+                "level": 1,
+                "miner_id": "682c3fefe2ea0a4c8254bbcf",
+                "quantity": 0
+            },
+            {
+                "name": "El Detonador",
+                "level": 1,
+                "miner_id": "68723e26411d00ff27a83adf",
+                "quantity": 0
+            },
+            {
+                "name": "Frostbite",
+                "level": 3,
+                "miner_id": "674dd7bbcbe1e47b27065a6a",
+                "quantity": 0
+            },
+            {
+                "name": "Minerzilla",
+                "level": 2,
+                "miner_id": "63c013528606868c5f3479e8",
+                "quantity": 0
+            },
+            {
+                "name": "Crypto Claus",
+                "level": 0,
+                "miner_id": "6762fd5d05467d6df8d0447e",
+                "quantity": 0
+            },
+            {
+                "name": "Frostbite",
+                "level": 2,
+                "miner_id": "674dd7bbcbe1e47b27065a64",
+                "quantity": 0
+            },
+            {
+                "name": "Absolutely Flat",
+                "level": 0,
+                "miner_id": "67f8d9ba1c431afbfd09ce7c",
+                "quantity": 0
+            },
+            {
+                "name": "Shrumee",
+                "level": 1,
+                "miner_id": "631f78988238ed283a23311d",
+                "quantity": 0
+            },
+            {
+                "name": "Full Loot House",
+                "level": 0,
+                "miner_id": "68723ec8411d00ff27a83bae",
+                "quantity": 0
+            },
+            {
+                "name": "Polar Lumina",
+                "level": 0,
+                "miner_id": "678a2030b9f5f93824b4c131",
+                "quantity": 0
+            },
+            {
+                "name": "Pillar Pillagers",
+                "level": 0,
+                "miner_id": "68481e9accf7adb5d75f7b04",
+                "quantity": 0
+            },
+            {
+                "name": "Hamcraft",
+                "level": 0,
+                "miner_id": "67eeade76cbc1562cd90bb17",
+                "quantity": 0
+            },
+            {
+                "name": "Incubator",
+                "level": 0,
+                "miner_id": "6863bece411d00ff278209bd",
+                "quantity": 0
+            },
+            {
+                "name": "Lantan Technomancer",
+                "level": 0,
+                "miner_id": "6597bf0bf3433c802f2f1228",
+                "quantity": 0
+            },
+            {
+                "name": "Space Mission",
+                "level": 2,
+                "miner_id": "6752c206368cdcf089ff7528",
+                "quantity": 0
+            },
+            {
+                "name": "Hamguard",
+                "level": 1,
+                "miner_id": "680f5de5672b78a8fb900a34",
+                "quantity": 0
+            },
+            {
+                "name": "Survivor",
+                "level": 1,
+                "miner_id": "631f78668238ed283a232ed4",
+                "quantity": 0
+            },
+            {
+                "name": "Patriot Prospector",
+                "level": 0,
+                "miner_id": "649997687f28d1395d958cdd",
+                "quantity": 1
+            },
+            {
+                "name": "VeniVidiVici",
+                "level": 0,
+                "miner_id": "65ba399f43dcad8f6d110587",
+                "quantity": 0
+            },
+            {
+                "name": "AI-miner",
+                "level": 0,
+                "miner_id": "62447dbe42a0cd1b7d3350b0",
+                "quantity": 0
+            },
+            {
+                "name": "Lifebuoy",
+                "level": 1,
+                "miner_id": "631f7a888238ed283a2347f7",
+                "quantity": 0
+            },
+            {
+                "name": "Absolutely Flat",
+                "level": 1,
+                "miner_id": "67f8d9ba1c431afbfd09ce7f",
+                "quantity": 0
+            },
+            {
+                "name": "Aegis of Gold",
+                "level": 0,
+                "miner_id": "6824481dfbb67c190eed4d7d",
+                "quantity": 0
+            },
+            {
+                "name": "Celestial Eye",
+                "level": 0,
+                "miner_id": "68244872fbb67c190eed4e6f",
+                "quantity": 0
+            },
+            {
+                "name": "Elder Beast",
+                "level": 0,
+                "miner_id": "682448fcfbb67c190eed530f",
+                "quantity": 0
+            },
+            {
+                "name": "Galea B.C.",
+                "level": 0,
+                "miner_id": "65ba343d43dcad8f6d1103bf",
+                "quantity": 0
+            }
+        ]
+    },
+    "error": ""
+}
