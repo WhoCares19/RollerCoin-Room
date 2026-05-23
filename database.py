@@ -24,7 +24,6 @@ class DatabaseHandler:
         
         try:
             # Load levels 0 (Legacy) through 6 (Standard)
-            # Stats for all levels now reside in miner_level_stats
             for lvl in range(0, 7):
                 query = """
                     SELECT 
@@ -119,16 +118,17 @@ class DatabaseHandler:
                 miner_id = row[0]
                 cursor.execute("""
                     UPDATE miner_definitions 
-                    SET image_path=?, slot_size=?, set_global_id=?, set_sign_icon_path=?
+                    SET image_path=?, slot_size=?, set_global_id=?, set_sign_icon_path=?, filename=?
                     WHERE id=?
                 """, (base_data['image_path'], base_data['slot_size'], 
-                      base_data['set_global_id'], base_data['set_sign_icon_path'], miner_id))
+                      base_data['set_global_id'], base_data['set_sign_icon_path'], 
+                      base_data.get('filename'), miner_id))
             else:
                 cursor.execute("""
-                    INSERT INTO miner_definitions (name, image_path, slot_size, set_global_id, set_sign_icon_path)
-                    VALUES (?, ?, ?, ?, ?)
+                    INSERT INTO miner_definitions (name, image_path, slot_size, set_global_id, set_sign_icon_path, filename)
+                    VALUES (?, ?, ?, ?, ?, ?)
                 """, (base_data['name'], base_data['image_path'], base_data['slot_size'], 
-                      base_data['set_global_id'], base_data['set_sign_icon_path']))
+                      base_data['set_global_id'], base_data['set_sign_icon_path'], base_data.get('filename')))
                 miner_id = cursor.lastrowid
 
             for l in levels_list:
