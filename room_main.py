@@ -490,14 +490,51 @@ class MainWindow(QMainWindow):
 
     def delete_room(self, idx):
         if len(self.room_views) <= 1: return
-        if QMessageBox.question(self, "Delete", f"Delete Room {idx+1}?", QMessageBox.Yes|QMessageBox.No) == QMessageBox.Yes:
-            self.room_views[idx].clear_room(False); self.room_stack.removeWidget(self.room_views[idx]); self.room_nav.removeWidget(self.room_buttons[idx])
-            self.room_buttons.pop(idx).deleteLater(); self.room_views.pop(idx).deleteLater()
-            for i, b in enumerate(self.room_buttons):
-                b.setText(f"Room {i + 1}"); b.clicked.disconnect(); b.clicked.connect(lambda c=False, x=i: self.room_stack.setCurrentIndex(x))
-                b.customContextMenuRequested.disconnect(); b.customContextMenuRequested.connect(lambda p, x=i: self.on_room_button_context_menu(p, x))
-            for i, v in enumerate(self.room_views): v.room_id = i
-            self.io_manager.save_app_config(); self.update_stats(); self.record_state(); self.io_manager.auto_save()
+        view = self.room_views[idx]
+        room_state = view.get_room_state()
+        has_items = len(room_state.get('racks', [])) > 0
+
+        silent_mode = False
+        if has_items:
+            msg_box = QMessageBox(self)
+            msg_box.setWindowTitle("Confirm Deletion")
+            msg_box.setText("The room you are about to delete has racks and miners inside, do you want to delete those miners or return them to your personal inventory?")
+            
+            btn_delete = msg_box.addButton("Delete", QMessageBox.ButtonRole.DestructiveRole)
+            btn_personal = msg_box.addButton("To Personal Inventory", QMessageBox.ButtonRole.ActionRole)
+            btn_cancel = msg_box.addButton("Cancel", QMessageBox.ButtonRole.RejectRole)
+            
+            msg_box.exec()
+            
+            if msg_box.clickedButton() == btn_cancel:
+                return
+            elif msg_box.clickedButton() == btn_delete:
+                silent_mode = True
+            else: # To Personal Inventory
+                silent_mode = False
+        else:
+            if QMessageBox.question(self, "Delete", f"Delete Room {idx+1}?", QMessageBox.Yes|QMessageBox.No) != QMessageBox.Yes:
+                return
+
+        view.clear_room(only_miners=False, silent=silent_mode)
+        self.room_stack.removeWidget(view)
+        self.room_nav.removeWidget(self.room_buttons[idx])
+        self.room_buttons.pop(idx).deleteLater()
+        self.room_views.pop(idx).deleteLater()
+        
+        for i, b in enumerate(self.room_buttons):
+            b.setText(f"Room {i + 1}")
+            b.clicked.disconnect()
+            b.clicked.connect(lambda c=False, x=i: self.room_stack.setCurrentIndex(x))
+            b.customContextMenuRequested.disconnect()
+            b.customContextMenuRequested.connect(lambda p, x=i: self.on_room_button_context_menu(p, x))
+        
+        for i, v in enumerate(self.room_views): v.room_id = i
+            
+        self.io_manager.save_app_config()
+        self.update_stats()
+        self.record_state()
+        self.io_manager.auto_save()
 
     def on_add_rack_clicked(self):
         dlg = AddRackDialog(self.db_handler, self)

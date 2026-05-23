@@ -567,9 +567,9 @@ class RoomView(QWidget):
     def get_room_state(self):
         return {'room_uuid': self.room_uuid, 'racks': [{'rack_data': p.rack.data, 'rack_bonus': p.rack.data.get('bonus_val', 0), 'rows': p.rack.rows_data, 'is_locked': p.rack.is_locked} for p in self.placeholders if p.rack]}
 
-    def clear_room(self, only_miners=False):
+    def clear_room(self, only_miners=False, silent=False):
         for p in self.placeholders:
             if p.rack:
-                if only_miners: p.rack.clear_miners()
-                else: p.remove_rack()
+                if only_miners: p.rack.clear_miners(silent=silent)
+                else: p.remove_rack(silent=silent)
         self.stats_changed.emit()
