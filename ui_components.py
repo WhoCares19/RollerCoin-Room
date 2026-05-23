@@ -27,6 +27,10 @@ class ImportProgressDialog(QDialog):
         self.progress.setValue(value)
         QApplication.processEvents()
 
+    def update_progress(self, value, text):
+        """Alias for update_status to maintain compatibility with splash screen calls."""
+        self.update_status(value, text)
+
 class HoverMenuButton(QPushButton):
     def __init__(self, text, parent=None):
         super().__init__(text, parent)

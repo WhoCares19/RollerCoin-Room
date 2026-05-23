@@ -108,6 +108,11 @@ class MainWindow(QMainWindow):
         self.record_state()
         if splash: splash.update_progress(100, "Ready.")
 
+    def prompt_missing_items_export(self, missing_names, default_filename="missing_items.txt"):
+        if not missing_names:
+            return
+        missing_miner_export.show_import_summary(self, missing_names, [], [], default_filename)
+
     def center_on_screen(self):
         frame_geo = self.frameGeometry()
         screen_center = QGuiApplication.primaryScreen().availableGeometry().center()
@@ -145,12 +150,10 @@ class MainWindow(QMainWindow):
                 for i, view in enumerate(self.room_views):
                     view.update_background(self.config.get("room1_bg", "") if i == 0 else self.config.get("room_rest_bg", ""))
             
-            # Immediate GIF animation update
             new_pause_gifs = self.config.get("pause_gifs", False)
             if old_pause_gifs != new_pause_gifs:
                 self.handle_room_switch(self.room_stack.currentIndex())
 
-            # Immediate hamster pause/resume update
             new_pause_h = self.config.get("pause_hamsters", False)
             if old_pause_h != new_pause_h:
                 for view in self.room_views:
@@ -304,12 +307,15 @@ class MainWindow(QMainWindow):
         if not os.path.exists(path): return
         jc = importer.clean_and_parse_json(path)
         if not jc: return
+        m_names, f_racks, f_miners = [], [], []
         all_indices = [0]
         if isinstance(jc, list): all_indices.extend([r.get("room_index", 0) for r in jc])
         data_block = importer.find_mining_data_block(jc)
         if data_block: all_indices.extend([r.get("room_info", {}).get("level", 0) for r in data_block.get("rooms", [])])
         while len(self.room_views) <= max(all_indices): self.on_plus_clicked(auto_save=False)
-        if data_block: self._import_player_json(data_block, splash=splash)
+        
+        if data_block: 
+            m_names, f_racks, f_miners = self._import_player_json(data_block, splash=splash)
         elif isinstance(jc, list):
             jc.sort(key=lambda x: x.get("room_index", 0))
             miner_pass_queue = []
@@ -318,10 +324,7 @@ class MainWindow(QMainWindow):
                 if idx < len(self.room_views):
                     view = self.room_views[idx]
                     view.room_uuid = rd.get("room_uuid")
-                    if splash:
-                        msg = f"Placing Racks in Room {idx + 1}"
-                        if hasattr(splash, 'update_status'): splash.update_status(40, msg)
-                        else: splash.update_progress(40, msg)
+                    if splash: splash.update_progress(40, f"Placing Racks in Room {idx + 1}")
                     for p_idx, ri in enumerate(rd.get("racks", [])):
                         if p_idx < len(view.placeholders):
                             rdt = self.repair_item_data(ri.get("rack_data", ri))
@@ -330,10 +333,8 @@ class MainWindow(QMainWindow):
                     QApplication.processEvents()
             for i, (rm_idx, p_idx, r_name, rows) in enumerate(miner_pass_queue):
                 if splash:
-                    msg = f"Placing Miners on {r_name} in Room {rm_idx + 1}"
                     prog = 60 + int((i/max(1, len(miner_pass_queue))) * 30)
-                    if hasattr(splash, 'update_status'): splash.update_status(prog, msg)
-                    else: splash.update_progress(prog, msg)
+                    splash.update_progress(prog, f"Placing Miners on {r_name} in Room {rm_idx + 1}")
                 r_widget = self.room_views[rm_idx].placeholders[p_idx].rack
                 if r_widget:
                     rrs = [self.repair_item_data(r) if isinstance(r, dict) else ([self.repair_item_data(m) if isinstance(m, dict) else m for m in r] if isinstance(r, list) else r) for r in rows]
@@ -343,48 +344,60 @@ class MainWindow(QMainWindow):
                             for s_idx, m_val in enumerate(row_val):
                                 if m_val: r_widget.add_miner(m_val, r_row_idx, s_idx)
                 QApplication.processEvents()
+        
+        if m_names or f_racks or f_miners:
+            missing_miner_export.show_import_summary(self, m_names, f_racks, f_miners)
 
     def _import_player_json(self, data, splash=None):
+        missing_in_db, failed_racks, failed_miners = [], [], []
         rm_meta = {r["_id"]: r["room_info"] for r in data.get("rooms", [])}
         for u, i in rm_meta.items(): 
             lvl = i.get("level", 0)
             if lvl < len(self.room_views): self.room_views[lvl].room_uuid = u
+            
         id_map, racks_by_u = {}, {}
         for r in data.get("racks", []): racks_by_u.setdefault(r.get("placement", {}).get("user_room_id"), []).append(r)
         sorted_room_uuids = sorted(rm_meta.keys(), key=lambda k: rm_meta[k].get("level", 0))
+        
         for u in sorted_room_uuids:
             view = next((v for v in self.room_views if v.room_uuid == u), None)
             if not view: continue
             lvl = rm_meta[u].get("level", 0)
-            if splash:
-                msg = f"Placing Racks in Room {lvl + 1}"
-                if hasattr(splash, 'update_status'): splash.update_status(40, msg)
-                else: splash.update_progress(40, msg)
+            if splash: splash.update_progress(40, f"Placing Racks in Room {lvl + 1}")
             rl = racks_by_u.get(u, [])
             rl.sort(key=lambda r: (r['placement'].get('y', 0) * rm_meta.get(u, {}).get("cols", 8)) + r['placement'].get('x', 0))
+            
             for i, rj in enumerate(rl):
-                if i >= len(view.placeholders): continue
+                if i >= len(view.placeholders):
+                    failed_racks.append(f"{rj.get('name', 'Unknown')} (Room {lvl+1} Full)")
+                    continue
                 db_item, _ = importer.find_item_robust(rj.get("rack_id"), rj.get("name"), None, self.inventory.tag_to_item_map, self.inventory.name_to_item_map)
                 if db_item:
                     if view.placeholders[i].add_rack(copy.deepcopy(db_item)):
                         self.inventory.adjust_quantity(db_item, -1)
                         id_map[rj["_id"]] = (view.placeholders[i].rack, rj.get("name", "Unknown"), lvl + 1)
+                else:
+                    missing_in_db.append(f"{rj.get('name', 'Unknown Rack')} (Tag: {rj.get('rack_id')})")
             QApplication.processEvents()
+            
         miners = data.get("miners", [])
         for i, mj in enumerate(miners):
             rack_id = mj.get("placement", {}).get("user_rack_id")
             if rack_id in id_map:
                 tr, rack_name, room_num = id_map[rack_id]
                 if splash:
-                    msg = f"Placing Miners on {rack_name} in Room {room_num}"
                     prog = 60 + int((i/max(1, len(miners))) * 30)
-                    if hasattr(splash, 'update_status'): splash.update_status(prog, msg)
-                    else: splash.update_progress(prog, msg)
+                    splash.update_progress(prog, f"Placing Miners on {rack_name} in Room {room_num}")
                 db_item, _ = importer.find_item_robust(mj.get("miner_id"), mj.get("name"), mj.get("level"), self.inventory.tag_to_item_map, self.inventory.name_to_item_map)
                 if db_item:
-                    if tr.add_miner(copy.deepcopy(db_item), row=mj["placement"].get("y", 0), slot=mj["placement"].get("x", 0)) or tr.add_miner(copy.deepcopy(db_item)):
-                        self.inventory.adjust_quantity(db_item, -1)
+                    placed = tr.add_miner(copy.deepcopy(db_item), row=mj["placement"].get("y", 0), slot=mj["placement"].get("x", 0))
+                    if not placed: placed = tr.add_miner(copy.deepcopy(db_item))
+                    if placed: self.inventory.adjust_quantity(db_item, -1)
+                    else: failed_miners.append(f"{mj.get('name')} (Rack {rack_name} Full)")
+                else:
+                    missing_in_db.append(f"{mj.get('name', 'Unknown Miner')} (Tag: {mj.get('miner_id')})")
             if i % 5 == 0: QApplication.processEvents()
+        return missing_in_db, failed_racks, failed_miners
 
     def clear_all_rooms(self, only_miners=False, show_progress=True):
         progress = ImportProgressDialog("Clearing", self) if show_progress else None
@@ -465,8 +478,7 @@ class MainWindow(QMainWindow):
         try:
             idx = next(i for i, rw in enumerate(racks) if rw.data == rd and rw.rows_data == rs)
             RackDetailsDialog(racks, idx, self).exec()
-        except StopIteration:
-            pass
+        except StopIteration: pass
 
     def add_room_button(self, idx):
         btn = QPushButton(f"Room {idx + 1}"); btn.clicked.connect(lambda c=False, i=idx: self.room_stack.setCurrentIndex(i))
@@ -483,6 +495,7 @@ class MainWindow(QMainWindow):
             self.room_buttons.pop(idx).deleteLater(); self.room_views.pop(idx).deleteLater()
             for i, b in enumerate(self.room_buttons):
                 b.setText(f"Room {i + 1}"); b.clicked.disconnect(); b.clicked.connect(lambda c=False, x=i: self.room_stack.setCurrentIndex(x))
+                b.customContextMenuRequested.disconnect(); b.customContextMenuRequested.connect(lambda p, x=i: self.on_room_button_context_menu(p, x))
             for i, v in enumerate(self.room_views): v.room_id = i
             self.io_manager.save_app_config(); self.update_stats(); self.record_state(); self.io_manager.auto_save()
 
